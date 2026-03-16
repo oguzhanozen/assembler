@@ -87,8 +87,3 @@ Ornekler:
 - Relocation/linking, ELF uretimi gibi ileri adimlar yoktur.
 - Simdilik GUI'de dosyadan asm acma ozelligi yok (metin editorune manuel giris/yapistirma)
 
-## Kisa Gelistirme Fikirleri
-
-- GUI'ye `Dosya Ac` butonu eklenmesi
-- Unit test/pytest tabanli otomatik regresyon testleri
-- Cikti dosyalarinda zaman damgali adlandirma
