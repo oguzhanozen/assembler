@@ -1,0 +1,49 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+eggs/
+*.egg-info/
+parts/
+sdist/
+var/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.tox/
+*.coverage
+.coverage.*
+.cache
+.pytest_cache/
+
+# Virtualenv
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary / output directories
+outputs/
+
+# Logs
+*.log
+
+# Editor swap
+*.swp
+
+# Environment files
+.env
+.venv
