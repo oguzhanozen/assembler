@@ -23,7 +23,9 @@ opcode_table = {
     "bge": {"format": "B", "opcode": "1100011", "funct3": "101"},
     "jal": {"format": "J", "opcode": "1101111"},
     "lui": {"format": "U", "opcode": "0110111"},
-    "auipc":{"format": "U", "opcode": "0010111"}
+    "auipc":{"format": "U", "opcode": "0010111"},
+    "ecall": {"format": "ENV", "word": "00000000000000000000000001110011"},
+    "ebreak": {"format": "ENV", "word": "00000000000100000000000001110011"}
 }
 
 directives = {".text", ".data", ".word", ".byte", ".end", ".global", ".extern"}
@@ -33,6 +35,7 @@ operand_counts = {
     "lw": 2, "lh": 2, "lbu": 2, "sw": 2, "sh": 2, "sb": 2, 
     "beq": 3, "bne": 3, "blt": 3, "bge": 3, "jal": 2, "jalr": 3,
     "lui": 2, "auipc": 2,
+    "ecall": 0, "ebreak": 0,
     ".text": 0, ".data": 0, ".end": 0, ".word": -1, ".byte": -1,
     ".global": 1, ".extern": 1
 }
@@ -294,12 +297,14 @@ class PicoRVAssembler:
             rd = validate_and_get_reg(args[0])
             imm_part = args[1]
             if imm_part.lstrip('-').replace('0x','',1).isdigit():
-                 imm_val = validate_and_get_imm(imm_part, 32)
-                 imm_bin = imm_val[0:20] 
+                 imm_bin = validate_and_get_imm(imm_part, 20)
             else:
                  self.relocations.append({"section": ".text", "offset": current_pc, "type": "R_RISCV_HI20", "symbol": imm_part})
                  imm_bin = "00000000000000000000"
             return f"{imm_bin}{rd}{op['opcode']}"
+
+        elif fmt == "ENV":
+            return op["word"]
 
     def assemble(self, source_code):
         self.errors = []

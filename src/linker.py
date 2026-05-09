@@ -37,8 +37,9 @@ class PicoRVLinker:
 
         data_words = self.pack_data_words(final_data_bytes)
         memory_words = [to_hex_word(word) for word in final_text] + data_words
+        entry_symbol = global_symbols.get("_start") or global_symbols.get("main")
         linked_object = {
-            "entry": global_symbols.get("main", {}).get("address", self.text_base),
+            "entry": entry_symbol["address"] if entry_symbol else self.text_base,
             "layout": {
                 "text_base": self.text_base,
                 "data_base": objects[0]["layout"]["data_segment_base"] if objects else align_up(self.text_base, 4),
@@ -67,7 +68,7 @@ class PicoRVLinker:
         objects = []
         for index, path in enumerate(object_paths):
             try:
-                with open(path, "r", encoding="utf-8") as obj_file:
+                with open(path, "r", encoding="utf-8-sig") as obj_file:
                     data = json.load(obj_file)
             except (OSError, json.JSONDecodeError) as exc:
                 self.errors.append(f"{path}: object dosyası okunamadı: {exc}")
