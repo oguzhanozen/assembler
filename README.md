@@ -50,7 +50,6 @@ Bu proje, egitim amacli gelistirilmis iki gecisli (two-pass) bir RISC-V RV32I as
 assembler/
   main.py
   README.md
-  big_o_grafik.png
   src/
     __init__.py
     assembler.py
@@ -60,6 +59,7 @@ assembler/
     <asm_dosya_adi>.o
     program.hex
     program.linked.json
+  tests/
 ```
 
 ## Gereksinimler
