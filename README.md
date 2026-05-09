@@ -20,6 +20,7 @@ Bu proje, egitim amacli gelistirilmis iki gecisli (two-pass) bir RISC-V RV32I as
 - B-tipi: beq, bne, blt, bge
 - J-tipi: jal
 - U-tipi: lui, auipc
+- Sistem: ecall, ebreak
 
 ## Desteklenen Direktifler
 
@@ -37,6 +38,7 @@ Bu proje, egitim amacli gelistirilmis iki gecisli (two-pass) bir RISC-V RV32I as
   - addi/lw/sw offset: 12-bit isaretli aralik
   - beq/bne: 13-bit branch offset
   - jal: 21-bit jump offset
+  - lui/auipc: 20-bit U-type immediate alani dogrudan yazilir. Ornek: `lui x5, 1` register etkisi olarak `1 << 12` yukler.
 - .word: 32-bit isaretli deger kabul eder.
 - .byte: -128 ile 255 araligini kabul eder.
   - 0..255 degerleri 8-bit olarak yazilir.
@@ -54,14 +56,6 @@ assembler/
     assembler.py
     gui.py
     linker.py
-  tests/
-    program.asm
-    test_linker.py
-    test_1_basarili_bellek_segmentasyon.asm
-    test_2_ileri_referans_forward_reference.asm
-    test_3_alignment_hizalama.asm
-    test_4_regex_ile_adresleme.asm
-    test_5_branch_jump.asm
   outputs/
     <asm_dosya_adi>.o
     program.hex
@@ -102,18 +96,6 @@ Bu komut iki cikti uretir:
 
 - outputs/program.hex
 - outputs/program.linked.json
-
-## Test Senaryolari
-
-Tests klasorundeki mevcut asm dosyalari:
-
-- test_1_basarili_bellek_segmentasyon.asm
-- test_2_ileri_referans_forward_reference.asm
-- test_3_alignment_hizalama.asm
-- test_4_regex_ile_adresleme.asm
-- test_5_branch_jump.asm
-
-Not: Mevcut test setinde alignment_hizalama dosyasi bilincli olarak branch hizalama hatasi uretir; digerleri basarili senaryo olarak calisir.
 
 ## Cikti Formati
 
