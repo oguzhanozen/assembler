@@ -321,10 +321,11 @@ Kartın gücü kesilmediği sürece Gowin Programmer işlemini tekrarlamadan far
 Loader penceresi mevcut `HostLoader` API'sini arka plan thread'inde kullanır. Yükleme
 sırasında IDE donmaz; ilerleme, ACK/NACK hataları ve sonuçlar işlem günlüğünde gösterilir.
 
-## Testler
+## Assembly Test Senaryoları
 
-```bash
-python -m unittest discover -s tests -p "test_*.py" -v
-```
+`tests/` klasörü, kart üzerinde çalıştırılabilecek farklı Assembly senaryolarını içerir:
 
-Testler parser, V2 object üretimi, loader image, UART paket protokolü, ACK/NACK retry davranışı, iki region yerleşimi, NOBITS `.bss`, relocation, overflow/orphan hataları ve bölge bazlı HEX çıktısını doğrular.
+- `karasimsek`: LED'leri sırayla yakar.
+- `ileri_geri_sayac`: S1 ve S2 butonlarıyla LED sayacını artırır ve azaltır.
+- `secimli_mat`: Buton seçimine göre farklı matematik işlemleri çalıştırır.
+- `bram_sinir_zorlama`: BRAM sınırındaki ve sınır dışındaki bellek erişimlerini dener.
