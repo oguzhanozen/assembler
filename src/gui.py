@@ -8,6 +8,8 @@ from typing import Optional
 
 from src.assembler import PicoRVAssembler, opcode_table
 from src.linker import PicoRVLinker
+from src.loader_gui import LoaderWindow
+from src.project_paths import ASSEMBLER_OUTPUT_DIR, LINKER_OUTPUT_DIR, LOADER_OUTPUT_DIR, ensure_output_dirs
 
 
 @dataclass
@@ -28,6 +30,7 @@ class AssemblerApp:
     def __init__(self, root):
         self.root = root
         self.editor_tabs = {}
+        self.loader_window = None
         self.close_button_element = "CloseButton"
         self.root.title("PicoRV32I Assembler IDE")
         self.root.geometry("980x650")
@@ -49,6 +52,10 @@ class AssemblerApp:
         linker_menu = tk.Menu(menubar, tearoff=0)
         linker_menu.add_command(label="Object Dosyalarını Linkle...", command=self.link_object_files)
         menubar.add_cascade(label="Linker", menu=linker_menu)
+
+        fpga_menu = tk.Menu(menubar, tearoff=0)
+        fpga_menu.add_command(label="UART Loader...", command=self.open_loader_window)
+        menubar.add_cascade(label="FPGA", menu=fpga_menu)
 
         self.root.config(menu=menubar)
 
@@ -481,6 +488,12 @@ class AssemblerApp:
 
         self.root.destroy()
 
+    def open_loader_window(self):
+        if self.loader_window and not self.loader_window.closed:
+            self.loader_window.focus()
+            return
+        self.loader_window = LoaderWindow(self.root)
+
     def load_asm_file(self):
         file_path = filedialog.askopenfilename(
             title=".asm Dosyası Seç",
@@ -599,14 +612,12 @@ class AssemblerApp:
 
     def save_object_file(self, tab_data, obj_file):
         try:
-            project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-            output_dir = os.path.join(project_root, "outputs")
-            os.makedirs(output_dir, exist_ok=True)
+            ensure_output_dirs()
 
             asm_base_name = "output"
             if tab_data.file_path:
                 asm_base_name = os.path.splitext(os.path.basename(tab_data.file_path))[0]
-            object_path = os.path.join(output_dir, f"{asm_base_name}.o")
+            object_path = os.path.join(ASSEMBLER_OUTPUT_DIR, f"{asm_base_name}.o")
 
             with open(object_path, "w", encoding="utf-8") as out_file:
                 json.dump(obj_file, out_file, indent=4)
@@ -614,6 +625,7 @@ class AssemblerApp:
             return (
                 "Sıfır hata. Çeviri başarılı!\n"
                 f"Linker için .o meta-dosyası kaydedildi: {object_path}\n"
+                "Adreslenmiş HEX çıktısı linker script ile link aşamasında üretilir.\n"
             )
         except OSError as e:
             return f"Sıfır hata. Çeviri başarılı!\nDosyaya kaydetme hatası: {e}"
@@ -621,12 +633,20 @@ class AssemblerApp:
     def link_object_files(self):
         object_paths = filedialog.askopenfilenames(
             title="Object Dosyalarını Seç",
+            initialdir=ASSEMBLER_OUTPUT_DIR,
             filetypes=[("Object Files", "*.o"), ("JSON Files", "*.json"), ("All Files", "*.*")],
         )
         if not object_paths:
             return
 
-        linker = PicoRVLinker()
+        script_path = filedialog.askopenfilename(
+            title="Linker Script Seç",
+            filetypes=[("Linker Scripts", "*.ld"), ("All Files", "*.*")],
+        )
+        if not script_path:
+            return
+
+        linker = PicoRVLinker(script_path)
         linked_object, errors = linker.link(object_paths)
         if errors:
             self.show_linker_output(
@@ -636,10 +656,29 @@ class AssemblerApp:
             )
             return
 
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-        output_prefix = os.path.join(project_root, "outputs", "program")
+        ensure_output_dirs()
+        output_path = filedialog.asksaveasfilename(
+            title="Link Çıktısını Kaydet",
+            defaultextension=".linked.json",
+            filetypes=[("Linked JSON", "*.linked.json"), ("All Files", "*.*")],
+            initialdir=LINKER_OUTPUT_DIR,
+            initialfile="program.linked.json",
+        )
+        if not output_path:
+            self.show_linker_output(
+                error_output="Link başarılı, çıktı kaydedilmedi.",
+                symbol_output=self.format_linked_symbols(linked_object),
+                object_output=self.format_linked_layout(linked_object),
+            )
+            return
+
+        output_prefix = self.linked_output_prefix_from_save_path(output_path)
         try:
-            output_paths = linker.write_outputs(linked_object, output_prefix)
+            output_paths = linker.write_outputs(
+                linked_object,
+                output_prefix,
+                loader_dir=LOADER_OUTPUT_DIR,
+            )
         except OSError as e:
             self.show_linker_output(
                 error_output=f"Link başarılı, çıktı dosyası yazılamadı:\n{e}",
@@ -651,14 +690,24 @@ class AssemblerApp:
         error_output = (
             "Link başarılı.\n"
             f"Girdi object sayısı: {len(object_paths)}\n"
-            f"HEX çıktı: {output_paths['hex']}\n"
+            f"Linker script: {script_path}\n"
+            f"Loader image: {output_paths['loader_image']}\n"
             f"JSON çıktı: {output_paths['json']}\n"
         )
+        for region, region_path in output_paths["regions"].items():
+            error_output += f"{region} HEX çıktı: {region_path}\n"
         self.show_linker_output(
             error_output=error_output,
             symbol_output=self.format_linked_symbols(linked_object),
             object_output=self.format_linked_layout(linked_object),
         )
+
+    def linked_output_prefix_from_save_path(self, save_path):
+        normalized_path = os.path.abspath(save_path)
+        lower_path = normalized_path.lower()
+        if lower_path.endswith(".linked.json"):
+            return normalized_path[: -len(".linked.json")]
+        return normalized_path
 
     def show_linker_output(self, error_output, symbol_output, object_output):
         tab_data = self.get_current_tab_data()
@@ -680,18 +729,25 @@ class AssemblerApp:
         return "\n".join(lines) + ("\n" if lines else "")
 
     def format_linked_layout(self, linked_object):
-        layout = linked_object["layout"]
         lines = [
             f"Entry: 0x{linked_object['entry']:08X}",
-            f"Text base: 0x{layout['text_base']:08X}",
-            f"Data base: 0x{layout['data_base']:08X}",
+            f"Entry symbol: {linked_object['entry_symbol']}",
+            f"Script: {linked_object['script']}",
             "",
-            "--- OBJECT LAYOUT ---",
+            "--- MEMORY REGIONS ---",
         ]
-        for obj in layout["objects"]:
+        for region in linked_object["memory_regions"]:
             lines.append(
-                f"{obj['name']}: text=0x{obj['text_base']:08X}+{obj['text_size']} "
-                f"data=0x{obj['data_base']:08X}+{obj['data_size']}"
+                f"{region['name']} ({region['flags']}): "
+                f"0x{region['origin']:08X}+{region['length']} used={region['used']}"
+            )
+        lines.append("")
+        lines.append("--- OUTPUT SECTIONS ---")
+        for section in linked_object["output_sections"]:
+            lines.append(
+                f"{section['name']} > {section['region']}: "
+                f"0x{section['address']:08X}+{section['size']}"
+                + (" NOLOAD" if section["noload"] else "")
             )
         lines.append("")
         lines.append("--- RELOCATIONS ---")
@@ -712,14 +768,15 @@ class AssemblerApp:
         return "\n".join(lines) + ("\n" if lines else "")
 
     def format_object_output(self, obj_file):
-        lines = ["--- .TEXT SECTION ---"]
-        for i, code in enumerate(obj_file["text"]):
-            lines.append(f"0x{(i * 4):08X}: {code}")
-
-        if obj_file["data"]:
+        lines = [f"Object format: {obj_file.get('format')} v{obj_file.get('version')}"]
+        for section in obj_file.get("sections", []):
             lines.append("")
-            lines.append("--- .DATA SECTION ---")
-            for i, code in enumerate(obj_file["data"]):
-                lines.append(f"0x{i:08X}: {code}")
+            lines.append(
+                f"--- {section['name']} {section['type']} flags={section['flags']} "
+                f"align={section['alignment']} size={section['size']} ---"
+            )
+            data = section.get("data", [])
+            for offset in range(0, len(data), 4):
+                lines.append(f"0x{offset:08X}: {' '.join(data[offset:offset + 4])}")
 
         return "\n".join(lines) + "\n"
