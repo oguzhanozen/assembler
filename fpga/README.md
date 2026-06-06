@@ -58,8 +58,8 @@ dosyasına kopyalanır. `fpga/impl/` klasörü yeniden üretilebilir Gowin build
 - Program/veri BRAM: `0x00000000` - `0x00003FFF`
 - LED MMIO: `0x10000000`, düşük 6 bit
 - Buton MMIO: `0x10000004`, salt-okunur, basılı durumda ilgili bit `1`
-  - Bit 0: kart butonu S1, FPGA pin `3`
-  - Bit 1: kart butonu S2, FPGA pin `4`
+  - Bit 0: kart butonu S1, FPGA pin `4`
+  - Bit 1: kart butonu S2, FPGA pin `3`
 - LED çıkışları kart üzerinde active-low
 - Kart butonları pinlerde active-low ve iki flip-flop ile saat alanına senkronize edilir.
 - Fiziksel butonlar sistem reseti değildir. FPGA yapılandırıldığında register başlangıç
@@ -70,7 +70,7 @@ dosyasına kopyalanır. `fpga/impl/` klasörü yeniden üretilebilir Gowin build
 Butonları LED 0 ve LED 1 üzerinde göstermek için `examples/button_led.asm` kullanılabilir.
 Mekanik buton sıçraması donanımda filtrelenmez; tek basışta yalnız bir olay üretmek isteyen
 programlar debounce işlemini yazılımda yapmalıdır. Pin `4` aynı zamanda özel JTAG seçim
-işlevine sahip olduğundan kart yapılandırılırken S2'yi basılı tutmayın.
+işlevine sahip olduğundan kart yapılandırılırken S1'i basılı tutmayın.
 
 ## Vendor Kaynakları
 

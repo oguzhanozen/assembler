@@ -495,28 +495,42 @@ class AssemblerApp:
         self.loader_window = LoaderWindow(self.root)
 
     def load_asm_file(self):
-        file_path = filedialog.askopenfilename(
-            title=".asm Dosyası Seç",
+        file_paths = filedialog.askopenfilenames(
+            title="Bir veya Birden Fazla .asm Dosyası Seç",
             filetypes=[("Assembly Files", "*.asm"), ("All Files", "*.*")],
         )
-        if not file_path:
+        if not file_paths:
             return
 
-        existing_tab = self.find_tab_by_file_path(file_path)
-        if existing_tab:
-            self.notebook.select(existing_tab.frame)
-            self.render_tab_output(existing_tab)
+        open_errors = []
+        last_tab = None
+        for file_path in file_paths:
+            existing_tab = self.find_tab_by_file_path(file_path)
+            if existing_tab:
+                last_tab = existing_tab
+                continue
+
+            try:
+                normalized_path = os.path.abspath(file_path)
+                with open(normalized_path, "r", encoding="utf-8") as asm_file:
+                    content = asm_file.read()
+
+                tab = self.create_editor_tab(
+                    content=content,
+                    file_path=normalized_path,
+                    title=os.path.basename(normalized_path),
+                )
+                last_tab = self.get_tab_data(tab)
+            except (OSError, UnicodeError) as e:
+                open_errors.append(f"{file_path}: {e}")
+
+        if last_tab:
+            self.notebook.select(last_tab.frame)
+            self.render_tab_output(last_tab)
             self.refresh_window_title()
-            return
 
-        try:
-            normalized_path = os.path.abspath(file_path)
-            with open(normalized_path, "r", encoding="utf-8") as asm_file:
-                content = asm_file.read()
-
-            self.create_editor_tab(content=content, file_path=normalized_path, title=os.path.basename(normalized_path))
-        except OSError as e:
-            messagebox.showerror("Dosya Açma Hatası", f"ASM dosyası açılamadı:\n{e}")
+        if open_errors:
+            messagebox.showerror("Dosya Açma Hatası", "Bazı ASM dosyaları açılamadı:\n\n" + "\n".join(open_errors))
 
     def new_file(self):
         self.create_editor_tab()

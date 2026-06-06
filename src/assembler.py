@@ -10,6 +10,7 @@ opcode_table = {
     "srl": {"format": "R", "opcode": "0110011", "funct3": "101", "funct7": "0000000"},
     "sra": {"format": "R", "opcode": "0110011", "funct3": "101", "funct7": "0100000"},
     "addi":{"format": "I", "opcode": "0010011", "funct3": "000"},
+    "andi":{"format": "I", "opcode": "0010011", "funct3": "111"},
     "slli":{"format": "I_SHIFT", "opcode": "0010011", "funct3": "001", "funct7": "0000000"},
     "lw":  {"format": "I", "opcode": "0000011", "funct3": "010"},
     "lh":  {"format": "I", "opcode": "0000011", "funct3": "001"},
@@ -36,9 +37,9 @@ directives = {
 }
 
 operand_counts = {
-    "add": 3, "sub": 3, "addi": 3, "slli": 3, "and": 3, "or": 3, "xor": 3, "sll": 3, "srl": 3, "sra": 3,
+    "add": 3, "sub": 3, "addi": 3, "andi": 3, "slli": 3, "and": 3, "or": 3, "xor": 3, "sll": 3, "srl": 3, "sra": 3,
     "lw": 2, "lh": 2, "lbu": 2, "sw": 2, "sh": 2, "sb": 2, 
-    "beq": 3, "bne": 3, "blt": 3, "bge": 3, "jal": 2, "jalr": 3,
+    "beq": 3, "bne": 3, "blt": 3, "bge": 3, "jal": 2, "jalr": -1,
     "lui": 2, "auipc": 2,
     "ecall": 0, "ebreak": 0,
     ".text": 0, ".data": 0, ".rodata": 0, ".bss": 0, ".init": 0,
@@ -87,6 +88,21 @@ def validate_and_get_byte(byte_str):
         if "invalid literal" in str(e):
             raise ValueError(f"'{byte_str}' geçerli bir sayı değil.")
         raise e
+
+def is_numeric_immediate(value):
+    try:
+        int(value, 0)
+        return True
+    except ValueError:
+        return False
+
+def relocation_symbol(value, operator):
+    match = re.fullmatch(rf'%{operator}\(([a-zA-Z_]\w*)\)', value)
+    if match:
+        return match.group(1)
+    if re.fullmatch(r'[a-zA-Z_]\w*', value):
+        return value
+    raise ValueError(f"Geçersiz relocation ifadesi: '{value}'. Beklenen: %{operator}(symbol) veya symbol")
 
 class PicoRVAssembler:
     def __init__(self):
@@ -214,6 +230,9 @@ class PicoRVAssembler:
             if instruction in opcode_table:
                 expected_args = operand_counts.get(instruction, -1)
                 actual_args = len(tokens) - 1
+                if instruction == "jalr" and actual_args not in (2, 3):
+                    self.errors.append(f"Satır {line_num}: 'jalr' komutu 2 veya 3 argüman bekler, {actual_args} verildi.")
+                    continue
                 if expected_args != -1 and actual_args != expected_args:
                     self.errors.append(f"Satır {line_num}: '{instruction}' komutu {expected_args} argüman bekler, {actual_args} verildi.")
                     continue
@@ -237,26 +256,28 @@ class PicoRVAssembler:
             return f"{op['funct7']}{rs2}{rs1}{op['funct3']}{rd}{op['opcode']}"
             
         elif fmt == "I":
-            if inst in ["lw", "lh", "lbu"]:
+            if inst in ["lw", "lh", "lbu"] or (inst == "jalr" and len(args) == 2):
                 rd = validate_and_get_reg(args[0])
-                match = re.match(r'^(-?(?:0x[0-9a-fA-F]+|\d+)|[a-zA-Z_]\w*)\((x\d+)\)$', args[1])
+                match = re.match(r'^(-?(?:0[xX][0-9a-fA-F]+|\d+)|[a-zA-Z_]\w*|%lo\([a-zA-Z_]\w*\))\((x\d+)\)$', args[1])
                 if not match:
-                    raise ValueError(f"Bellek adresi formatı hatalı: '{args[1]}'. Doğru format: imm(reg) veya label(reg)")
+                    raise ValueError(f"Bellek adresi formatı hatalı: '{args[1]}'. Doğru format: imm(reg), label(reg) veya %lo(label)(reg)")
                 imm_part = match.group(1)
                 rs1 = validate_and_get_reg(match.group(2))
                 
-                if imm_part.lstrip('-').replace('0x','',1).isdigit():
+                if is_numeric_immediate(imm_part):
                     imm = validate_and_get_imm(imm_part, 12)
                 else:
-                    self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_LO12_I", "symbol": imm_part})
+                    symbol = relocation_symbol(imm_part, "lo")
+                    self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_LO12_I", "symbol": symbol})
                     imm = "000000000000"
             else:
                 rd, rs1 = validate_and_get_reg(args[0]), validate_and_get_reg(args[1])
                 imm_part = args[2]
-                if imm_part.lstrip('-').replace('0x','',1).isdigit():
+                if is_numeric_immediate(imm_part):
                     imm = validate_and_get_imm(imm_part, 12)
                 else:
-                    self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_LO12_I", "symbol": imm_part})
+                    symbol = relocation_symbol(imm_part, "lo")
+                    self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_LO12_I", "symbol": symbol})
                     imm = "000000000000"
             return f"{imm}{rs1}{op['funct3']}{rd}{op['opcode']}"
 
@@ -273,16 +294,17 @@ class PicoRVAssembler:
             
         elif fmt == "S":
             rs2 = validate_and_get_reg(args[0])
-            match = re.match(r'^(-?(?:0x[0-9a-fA-F]+|\d+)|[a-zA-Z_]\w*)\((x\d+)\)$', args[1])
+            match = re.match(r'^(-?(?:0[xX][0-9a-fA-F]+|\d+)|[a-zA-Z_]\w*|%lo\([a-zA-Z_]\w*\))\((x\d+)\)$', args[1])
             if not match:
-                raise ValueError(f"Bellek adresi formatı hatalı: '{args[1]}'. Doğru format: imm(reg) veya label(reg)")
+                raise ValueError(f"Bellek adresi formatı hatalı: '{args[1]}'. Doğru format: imm(reg), label(reg) veya %lo(label)(reg)")
             imm_part = match.group(1)
             rs1 = validate_and_get_reg(match.group(2))
             
-            if imm_part.lstrip('-').replace('0x','',1).isdigit():
+            if is_numeric_immediate(imm_part):
                 imm_val = validate_and_get_imm(imm_part, 12)
             else:
-                self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_LO12_S", "symbol": imm_part})
+                symbol = relocation_symbol(imm_part, "lo")
+                self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_LO12_S", "symbol": symbol})
                 imm_val = "000000000000"
             return f"{imm_val[0:7]}{rs2}{rs1}{op['funct3']}{imm_val[7:12]}{op['opcode']}"
             
@@ -314,10 +336,11 @@ class PicoRVAssembler:
         elif fmt == "U":
             rd = validate_and_get_reg(args[0])
             imm_part = args[1]
-            if imm_part.lstrip('-').replace('0x','',1).isdigit():
+            if is_numeric_immediate(imm_part):
                  imm_bin = validate_and_get_imm(imm_part, 20)
             else:
-                 self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_HI20", "symbol": imm_part})
+                 symbol = relocation_symbol(imm_part, "hi")
+                 self.relocations.append({"section": self.current_section, "offset": current_pc, "type": "R_RISCV_HI20", "symbol": symbol})
                  imm_bin = "00000000000000000000"
             return f"{imm_bin}{rd}{op['opcode']}"
 
@@ -573,6 +596,8 @@ class PicoRVAssemblerV2(PicoRVAssembler):
                 if instruction in opcode_table:
                     expected = operand_counts.get(instruction, -1)
                     actual = len(tokens) - 1
+                    if instruction == "jalr" and actual not in (2, 3):
+                        raise ValueError(f"'jalr' komutu 2 veya 3 argüman bekler, {actual} verildi.")
                     if expected != -1 and actual != expected:
                         raise ValueError(f"'{instruction}' komutu {expected} argüman bekler, {actual} verildi.")
                     offset = self.current_offset()

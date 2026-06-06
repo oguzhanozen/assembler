@@ -104,10 +104,9 @@ SECTIONS {
 }
 ```
 
-Hazır scriptler:
+Hazır script:
 
-- `examples/single_bram.ld`: kod ve veriyi tek BRAM içinde yerleştirir.
-- `examples/split_rom_ram.ld`: kodu ROM, veri ve `.bss` alanını RAM içine yerleştirir.
+- `tests/project.ld`: kod ve veriyi kart üzerindeki tek BRAM bölgesine yerleştirir.
 
 Script hiçbir input section'ı eşleştirmeden bırakamaz. Orphan section, region overflow/çakışması, region flag uyumsuzluğu ve global olmayan/eksik entry link hatasıdır.
 
@@ -117,7 +116,7 @@ Link:
 
 ```bash
 python -m src.linker outputs/assembler/main.o outputs/assembler/delay.o \
-  -T examples/single_bram.ld \
+  -T tests/project.ld \
   -o outputs/linker/program
 ```
 
@@ -245,7 +244,7 @@ PicoRV32 çevre birimi bellek haritası:
 | `0x10000000` | Oku/yaz | Kart üzerindeki altı LED, düşük 6 bit |
 | `0x10000004` | Salt-okunur | Kart üzerindeki S1/S2 butonları, basılı durumda bit 0/1 değeri `1` |
 
-`examples/button_led.asm`, iki butonun durumunu LED 0 ve LED 1 üzerinde gösterir.
+`tests/ileri_geri_sayac/main2.asm`, iki butonla LED sayacını artırıp azaltan örnek programdır.
 
 ## Uzak Veri Adresleme
 
@@ -275,6 +274,40 @@ python main.py
 - `Linker > Object Dosyalarını Linkle...` önce object dosyalarını, sonra `.ld` script'i seçtirir.
 - Link sonucu memory region, output section, symbol ve relocation bilgileri sağ panelde gösterilir.
 - `FPGA > UART Loader...` `.picoimg` dosyasını seçilen COM port üzerinden karta yükler.
+
+### Kısa Çalıştırma Özeti
+
+Evet, kartın gücü kesildiyse veya FPGA üzerinde loader bitstream'i yüklü değilse önce
+Gowin Programmer işlemleri yapılmalıdır. Gowin Programmer, PicoRV32 işlemcisini ve UART
+loader donanımını karta yükler. Tkinter IDE ise daha sonra çalıştırılacak Assembly
+programlarını UART üzerinden BRAM'e gönderir.
+
+Kart ilk bağlandığında veya gücü kesildikten sonra:
+
+```text
+Gowin Programmer
+  -> outputs/fpga/picorv_loader.fs dosyasını seç
+  -> SRAM Program işlemini çalıştır
+  -> Programlamanın tamamlanmasını bekle
+```
+
+Çalıştırılacak her Assembly programı için:
+
+```text
+Tkinter IDE
+  -> Assembly dosyasını aç
+  -> Kodu Çevir (Assemble)
+  -> Linker > Object Dosyalarını Linkle...
+  -> .ld linker script seç
+  -> outputs/loader/program.picoimg üret
+  -> FPGA > UART Loader...
+  -> COM portu ve program.picoimg dosyasını seç
+  -> Bağlantıyı Test Et
+  -> FPGA'ya Yükle ve Çalıştır
+```
+
+Kartın gücü kesilmediği sürece Gowin Programmer işlemini tekrarlamadan farklı
+`.picoimg` programları Tkinter IDE üzerinden art arda yüklenebilir.
 
 ### IDE ile FPGA'ya Yükleme
 

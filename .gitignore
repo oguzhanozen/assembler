@@ -3,8 +3,6 @@ __pycache__/
 parser.out
 parsetab.py
 
-tests/
-
 fpga/impl/
 fpga/*.gprj.user
 
