@@ -224,7 +224,7 @@ Host yalnız doğru sequence numaralı ACK aldıktan sonra sonraki pakete geçer
 
 ## Tang Nano 9K FPGA Loader
 
-`fpga/` klasörü Tang Nano 9K için PicoRV32, hazır UART RX/TX modülleri, CRC32 kontrollü loader FSM, 16 KiB BRAM ve LED MMIO entegrasyonunu içerir.
+`fpga/` klasörü Tang Nano 9K için PicoRV32, hazır UART RX/TX modülleri, CRC32 kontrollü loader FSM, 16 KiB BRAM, LED MMIO ve iki kart butonu MMIO entegrasyonunu içerir.
 
 ```text
 .picoimg
@@ -233,10 +233,19 @@ Host yalnız doğru sequence numaralı ACK aldıktan sonra sonraki pakete geçer
   -> FPGA loader FSM
   -> 16 KiB BRAM
   -> PicoRV32
-  -> LED MMIO
+  -> LED ve buton MMIO
 ```
 
 GowinEDA kaynak sırası, pin constraint dosyası, lisanslar ve kart kurulum adımları [`fpga/README.md`](fpga/README.md) içinde açıklanır. V1 FPGA hedefi tek BRAM ve `0x00000000` entry adresi kullanır.
+
+PicoRV32 çevre birimi bellek haritası:
+
+| Adres | Erişim | İşlev |
+|---|---|---|
+| `0x10000000` | Oku/yaz | Kart üzerindeki altı LED, düşük 6 bit |
+| `0x10000004` | Salt-okunur | Kart üzerindeki S1/S2 butonları, basılı durumda bit 0/1 değeri `1` |
+
+`examples/button_led.asm`, iki butonun durumunu LED 0 ve LED 1 üzerinde gösterir.
 
 ## Uzak Veri Adresleme
 

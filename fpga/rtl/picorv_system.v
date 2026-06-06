@@ -1,6 +1,7 @@
 module picorv_system #(
     parameter MEM_WORDS = 4096,
-    parameter LED_ADDR = 32'h10000000
+    parameter LED_ADDR = 32'h10000000,
+    parameter BUTTON_ADDR = 32'h10000004
 ) (
     input  wire       clk,
     input  wire       reset,
@@ -8,7 +9,8 @@ module picorv_system #(
     input  wire [31:0] loader_write_addr,
     input  wire [7:0] loader_write_data,
     input  wire       cpu_reset,
-    output reg  [5:0] led,
+    input  wire [1:0] button_n,
+    output reg  [5:0] led = 0,
     output wire       trap
 );
     reg [7:0] memory0 [0:MEM_WORDS-1];
@@ -23,6 +25,9 @@ module picorv_system #(
     wire [31:0] mem_wdata;
     wire [3:0] mem_wstrb;
     reg [31:0] mem_rdata = 0;
+    reg [1:0] button_meta = 2'b11;
+    reg [1:0] button_sync = 2'b11;
+    wire [1:0] button_pressed = ~button_sync;
 
     wire ram_access = mem_addr < MEM_WORDS * 4;
     wire loader_ram_write = cpu_reset && loader_write_valid && loader_write_addr < MEM_WORDS * 4;
@@ -62,6 +67,16 @@ module picorv_system #(
     );
 
     always @(posedge clk) begin
+        if (reset) begin
+            button_meta <= 2'b11;
+            button_sync <= 2'b11;
+        end else begin
+            button_meta <= button_n;
+            button_sync <= button_meta;
+        end
+    end
+
+    always @(posedge clk) begin
         if (ram_wstrb[0])
             memory0[ram_addr] <= ram_wdata[7:0];
         if (ram_wstrb[1])
@@ -81,8 +96,11 @@ module picorv_system #(
                 if (|mem_wstrb)
                     led <= mem_wdata[5:0];
                 mem_rdata <= {26'b0, led};
+            // Keep the RAM read before additional MMIO reads so Gowin infers BSRAM.
             end else if (ram_access) begin
                 mem_rdata <= ram_rdata;
+            end else if (mem_addr == BUTTON_ADDR) begin
+                mem_rdata <= {30'b0, button_pressed};
             end else begin
                 mem_rdata <= 0;
             end

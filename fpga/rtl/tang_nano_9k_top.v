@@ -1,13 +1,14 @@
 module tang_nano_9k_top (
     input  wire       clk_27mhz,
-    input  wire       reset_button_n,
+    input  wire [1:0] button_n,
     input  wire       uart_rx_pin,
     output wire       uart_tx_pin,
     output wire [5:0] led_n
 );
     localparam UART_PRESCALE = 16'd29; // 27 MHz / (115200 * 8), rounded
 
-    wire reset = !reset_button_n;
+    // Both physical buttons are application inputs; configuration initializes the design.
+    wire reset = 1'b0;
     wire [7:0] rx_data;
     wire rx_valid;
     wire rx_ready;
@@ -40,7 +41,7 @@ module tang_nano_9k_top (
     picorv_system system (
         .clk(clk_27mhz), .reset(reset), .loader_write_valid(loader_write_valid),
         .loader_write_addr(loader_write_addr), .loader_write_data(loader_write_data),
-        .cpu_reset(cpu_reset), .led(led), .trap(trap)
+        .cpu_reset(cpu_reset), .button_n(button_n), .led(led), .trap(trap)
     );
 
     assign led_n = ~(led | {5'b0, trap});

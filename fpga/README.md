@@ -12,6 +12,7 @@ USB-UART
   -> 16 KiB BRAM
   -> picorv32
   -> 0x10000000 LED MMIO
+  -> 0x10000004 button MMIO
 ```
 
 Loader yükleme boyunca PicoRV32'yi reset altında tutar. `END` komutunda toplam byte ve transfer CRC32 doğrulandıktan sonra `RUN` komutu işlemci resetini kaldırır. V1 tasarımında desteklenen entry adresi `0x00000000` değeridir.
@@ -56,9 +57,20 @@ dosyasına kopyalanır. `fpga/impl/` klasörü yeniden üretilebilir Gowin build
 - UART: 115200 baud, 8N1
 - Program/veri BRAM: `0x00000000` - `0x00003FFF`
 - LED MMIO: `0x10000000`, düşük 6 bit
+- Buton MMIO: `0x10000004`, salt-okunur, basılı durumda ilgili bit `1`
+  - Bit 0: kart butonu S1, FPGA pin `3`
+  - Bit 1: kart butonu S2, FPGA pin `4`
 - LED çıkışları kart üzerinde active-low
-- Kart butonu: pin `4`, active-low, LVCMOS18
+- Kart butonları pinlerde active-low ve iki flip-flop ile saat alanına senkronize edilir.
+- Fiziksel butonlar sistem reseti değildir. FPGA yapılandırıldığında register başlangıç
+  değerleri loader'ı hazır, PicoRV32'yi ise yükleme tamamlanana kadar reset altında başlatır.
+- Yeni bir `.picoimg` yüklenirken `BEGIN` komutu PicoRV32'yi tekrar reset altında tutar.
 - USB-UART: FPGA RX pin `18`, FPGA TX pin `17`, LVCMOS33
+
+Butonları LED 0 ve LED 1 üzerinde göstermek için `examples/button_led.asm` kullanılabilir.
+Mekanik buton sıçraması donanımda filtrelenmez; tek basışta yalnız bir olay üretmek isteyen
+programlar debounce işlemini yazılımda yapmalıdır. Pin `4` aynı zamanda özel JTAG seçim
+işlevine sahip olduğundan kart yapılandırılırken S2'yi basılı tutmayın.
 
 ## Vendor Kaynakları
 

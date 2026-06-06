@@ -10,10 +10,10 @@ module picorv_loader_protocol #(
     output wire [7:0]  tx_data,
     output wire        tx_valid,
     input  wire        tx_ready,
-    output reg         loader_write_valid,
-    output reg [31:0]  loader_write_addr,
-    output reg [7:0]   loader_write_data,
-    output reg         cpu_reset
+    output reg         loader_write_valid = 1'b0,
+    output reg [31:0]  loader_write_addr = 0,
+    output reg [7:0]   loader_write_data = 0,
+    output reg         cpu_reset = 1'b1
 );
     localparam S_MAGIC0 = 0, S_MAGIC1 = 1, S_HEADER = 2, S_PAYLOAD = 3;
     localparam S_CRC = 4, S_EXECUTE = 5, S_WRITE = 6, S_SEND = 7, S_WAIT = 8;
