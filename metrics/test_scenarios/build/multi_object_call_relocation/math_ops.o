@@ -1,0 +1,44 @@
+{
+  "format": "picorv-json-object",
+  "version": 2,
+  "sections": [
+    {
+      "name": ".text",
+      "type": "PROGBITS",
+      "flags": "ax",
+      "alignment": 4,
+      "size": 16,
+      "data": [
+        "0x33",
+        "0x07",
+        "0xB5",
+        "0x00",
+        "0x67",
+        "0x80",
+        "0x00",
+        "0x00",
+        "0x33",
+        "0x07",
+        "0xB5",
+        "0x40",
+        "0x67",
+        "0x80",
+        "0x00",
+        "0x00"
+      ]
+    }
+  ],
+  "symbols": {
+    "fonksiyon_topla": {
+      "section": ".text",
+      "offset": 0,
+      "visibility": "global"
+    },
+    "fonksiyon_cikar": {
+      "section": ".text",
+      "offset": 8,
+      "visibility": "global"
+    }
+  },
+  "relocations": []
+}

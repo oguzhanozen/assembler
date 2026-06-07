@@ -1,0 +1,234 @@
+{
+  "format": "picorv-json-object",
+  "version": 2,
+  "sections": [
+    {
+      "name": ".text",
+      "type": "PROGBITS",
+      "flags": "ax",
+      "alignment": 4,
+      "size": 88,
+      "data": [
+        "0xB7",
+        "0x02",
+        "0x00",
+        "0x00",
+        "0x03",
+        "0xA3",
+        "0x02",
+        "0x00",
+        "0xB7",
+        "0x02",
+        "0x00",
+        "0x00",
+        "0x83",
+        "0xA3",
+        "0x02",
+        "0x00",
+        "0xB7",
+        "0x02",
+        "0x00",
+        "0x00",
+        "0x03",
+        "0xA4",
+        "0x02",
+        "0x00",
+        "0x13",
+        "0x05",
+        "0xC0",
+        "0x00",
+        "0x93",
+        "0x05",
+        "0x40",
+        "0x00",
+        "0x03",
+        "0xA6",
+        "0x03",
+        "0x00",
+        "0x13",
+        "0x76",
+        "0x16",
+        "0x00",
+        "0x63",
+        "0x1E",
+        "0x06",
+        "0x00",
+        "0x83",
+        "0x26",
+        "0x04",
+        "0x00",
+        "0x93",
+        "0xF6",
+        "0x26",
+        "0x00",
+        "0x63",
+        "0x9C",
+        "0x06",
+        "0x00",
+        "0x13",
+        "0x07",
+        "0x00",
+        "0x00",
+        "0x23",
+        "0x20",
+        "0xE3",
+        "0x00",
+        "0x6F",
+        "0xF0",
+        "0x1F",
+        "0xFE",
+        "0xEF",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x6F",
+        "0x00",
+        "0x80",
+        "0x00",
+        "0xEF",
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x23",
+        "0x20",
+        "0xE3",
+        "0x00",
+        "0x6F",
+        "0xF0",
+        "0xDF",
+        "0xFC"
+      ]
+    },
+    {
+      "name": ".init",
+      "type": "PROGBITS",
+      "flags": "ax",
+      "alignment": 4,
+      "size": 0,
+      "data": []
+    },
+    {
+      "name": ".data",
+      "type": "PROGBITS",
+      "flags": "aw",
+      "alignment": 4,
+      "size": 12,
+      "data": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x10",
+        "0x04",
+        "0x00",
+        "0x00",
+        "0x10",
+        "0x04",
+        "0x00",
+        "0x00",
+        "0x10"
+      ]
+    }
+  ],
+  "symbols": {
+    "_start": {
+      "section": ".text",
+      "offset": 0,
+      "visibility": "global"
+    },
+    "fonksiyon_topla": {
+      "section": "UNDEF",
+      "offset": 0,
+      "visibility": "extern"
+    },
+    "fonksiyon_cikar": {
+      "section": "UNDEF",
+      "offset": 0,
+      "visibility": "extern"
+    },
+    "main_loop": {
+      "section": ".text",
+      "offset": 32,
+      "visibility": "local"
+    },
+    "call_topla": {
+      "section": ".text",
+      "offset": 68,
+      "visibility": "local"
+    },
+    "call_cikar": {
+      "section": ".text",
+      "offset": 76,
+      "visibility": "local"
+    },
+    "ekrana_bas": {
+      "section": ".text",
+      "offset": 80,
+      "visibility": "local"
+    },
+    "led_addr": {
+      "section": ".data",
+      "offset": 0,
+      "visibility": "local"
+    },
+    "s1_addr": {
+      "section": ".data",
+      "offset": 4,
+      "visibility": "local"
+    },
+    "s2_addr": {
+      "section": ".data",
+      "offset": 8,
+      "visibility": "local"
+    }
+  },
+  "relocations": [
+    {
+      "section": ".text",
+      "offset": 0,
+      "type": "R_RISCV_HI20",
+      "symbol": "led_addr"
+    },
+    {
+      "section": ".text",
+      "offset": 4,
+      "type": "R_RISCV_LO12_I",
+      "symbol": "led_addr"
+    },
+    {
+      "section": ".text",
+      "offset": 8,
+      "type": "R_RISCV_HI20",
+      "symbol": "s1_addr"
+    },
+    {
+      "section": ".text",
+      "offset": 12,
+      "type": "R_RISCV_LO12_I",
+      "symbol": "s1_addr"
+    },
+    {
+      "section": ".text",
+      "offset": 16,
+      "type": "R_RISCV_HI20",
+      "symbol": "s2_addr"
+    },
+    {
+      "section": ".text",
+      "offset": 20,
+      "type": "R_RISCV_LO12_I",
+      "symbol": "s2_addr"
+    },
+    {
+      "section": ".text",
+      "offset": 68,
+      "type": "R_RISCV_JAL",
+      "symbol": "fonksiyon_topla"
+    },
+    {
+      "section": ".text",
+      "offset": 76,
+      "type": "R_RISCV_JAL",
+      "symbol": "fonksiyon_cikar"
+    }
+  ]
+}

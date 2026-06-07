@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="600" viewBox="0 0 1000 600">
+<rect width="100%" height="100%" fill="white"/>
+<text x="500.0" y="38" text-anchor="middle" font-family="Arial" font-size="24" font-weight="bold">Kod Boyutu ve UART Yükleme Süresi</text>
+<text x="527.5" y="575" text-anchor="middle" font-family="Arial" font-size="16">Yüklenen program boyutu (byte)</text>
+<text x="25" y="292.5" transform="rotate(-90 25 292.5)" text-anchor="middle" font-family="Arial" font-size="16">Ortalama UART yükleme süresi (ms)</text>
+<line x1="100.0" y1="75" x2="100.0" y2="510" stroke="#eeeeee"/>
+<line x1="100" y1="510.0" x2="955" y2="510.0" stroke="#eeeeee"/>
+<text x="100.0" y="534" text-anchor="middle" font-family="Arial" font-size="12">0</text>
+<text x="90" y="514.0" text-anchor="end" font-family="Arial" font-size="12">0.0</text>
+<line x1="271.0" y1="75" x2="271.0" y2="510" stroke="#eeeeee"/>
+<line x1="100" y1="423.0" x2="955" y2="423.0" stroke="#eeeeee"/>
+<text x="271.0" y="534" text-anchor="middle" font-family="Arial" font-size="12">36</text>
+<text x="90" y="427.0" text-anchor="end" font-family="Arial" font-size="12">8.6</text>
+<line x1="442.0" y1="75" x2="442.0" y2="510" stroke="#eeeeee"/>
+<line x1="100" y1="336.0" x2="955" y2="336.0" stroke="#eeeeee"/>
+<text x="442.0" y="534" text-anchor="middle" font-family="Arial" font-size="12">72</text>
+<text x="90" y="340.0" text-anchor="end" font-family="Arial" font-size="12">17.2</text>
+<line x1="613.0" y1="75" x2="613.0" y2="510" stroke="#eeeeee"/>
+<line x1="100" y1="249.0" x2="955" y2="249.0" stroke="#eeeeee"/>
+<text x="613.0" y="534" text-anchor="middle" font-family="Arial" font-size="12">108</text>
+<text x="90" y="253.0" text-anchor="end" font-family="Arial" font-size="12">25.8</text>
+<line x1="784.0" y1="75" x2="784.0" y2="510" stroke="#eeeeee"/>
+<line x1="100" y1="162.0" x2="955" y2="162.0" stroke="#eeeeee"/>
+<text x="784.0" y="534" text-anchor="middle" font-family="Arial" font-size="12">144</text>
+<text x="90" y="166.0" text-anchor="end" font-family="Arial" font-size="12">34.4</text>
+<line x1="955.0" y1="75" x2="955.0" y2="510" stroke="#eeeeee"/>
+<line x1="100" y1="75.0" x2="955" y2="75.0" stroke="#eeeeee"/>
+<text x="955.0" y="534" text-anchor="middle" font-family="Arial" font-size="12">179</text>
+<text x="90" y="79.0" text-anchor="end" font-family="Arial" font-size="12">43.0</text>
+<circle cx="328.8" cy="283.6" r="8" fill="#1976d2"/>
+<text x="340.8" y="273.6" font-family="Arial" font-size="13">Walking-One Pattern Test</text>
+<circle cx="843.5" cy="147.5" r="8" fill="#388e3c"/>
+<text x="855.5" y="137.5" font-family="Arial" font-size="13">Up/Down Counter Test</text>
+<circle cx="652.8" cy="224.0" r="8" fill="#f57c00"/>
+<text x="664.8" y="214.0" font-family="Arial" font-size="13">Multi-Object Call/Relocation Test</text>
+<circle cx="805.4" cy="155.3" r="8" fill="#7b1fa2"/>
+<text x="817.4" y="145.3" font-family="Arial" font-size="13">Memory Boundary/Out-of-Range Test</text>
+<line x1="100" y1="510" x2="955" y2="510" stroke="#333333"/>
+<line x1="100" y1="75" x2="100" y2="510" stroke="#333333"/>
+</svg>

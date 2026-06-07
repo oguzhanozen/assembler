@@ -1,0 +1,322 @@
+{
+    "format": "picorv-linked-image",
+    "version": 2,
+    "script": "C:\\Users\\Oguzhan\\Desktop\\assembler\\tests\\project.ld",
+    "entry_symbol": "_start",
+    "entry": 0,
+    "memory_regions": [
+        {
+            "name": "BRAM",
+            "flags": "rwx",
+            "origin": 0,
+            "length": 16384,
+            "used": 160,
+            "memory_words": [
+                "0x000002B7",
+                "0x0902A303",
+                "0x000002B7",
+                "0x0942A383",
+                "0x000002B7",
+                "0x0982A403",
+                "0x000002B7",
+                "0x09C28493",
+                "0x00000513",
+                "0x00A4A023",
+                "0x0003A583",
+                "0x0015F593",
+                "0x00059A63",
+                "0x00042603",
+                "0x00267613",
+                "0x02061063",
+                "0xFE9FF06F",
+                "0x0004A683",
+                "0x00168693",
+                "0x04000713",
+                "0x00E6CE63",
+                "0x00000693",
+                "0x0140006F",
+                "0x0004A683",
+                "0xFFF68693",
+                "0x0006D463",
+                "0x03F00693",
+                "0x00D4A023",
+                "0x00D32023",
+                "0x0003A583",
+                "0x0015F593",
+                "0x00042603",
+                "0x00267613",
+                "0x00C5E733",
+                "0xFE0716E3",
+                "0xF9DFF06F",
+                "0x10000000",
+                "0x10000004",
+                "0x10000004"
+            ]
+        }
+    ],
+    "output_sections": [
+        {
+            "name": ".init",
+            "region": "BRAM",
+            "address": 0,
+            "size": 0,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "main2.o",
+                    "section": ".init",
+                    "address": 0,
+                    "size": 0
+                }
+            ]
+        },
+        {
+            "name": ".text",
+            "region": "BRAM",
+            "address": 0,
+            "size": 144,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "main2.o",
+                    "section": ".text",
+                    "address": 0,
+                    "size": 144
+                },
+                {
+                    "object": "memory_map.o",
+                    "section": ".text",
+                    "address": 144,
+                    "size": 0
+                }
+            ]
+        },
+        {
+            "name": ".rodata",
+            "region": "BRAM",
+            "address": 144,
+            "size": 0,
+            "noload": false,
+            "inputs": []
+        },
+        {
+            "name": ".data",
+            "region": "BRAM",
+            "address": 144,
+            "size": 12,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "memory_map.o",
+                    "section": ".data",
+                    "address": 144,
+                    "size": 12
+                }
+            ]
+        },
+        {
+            "name": ".bss",
+            "region": "BRAM",
+            "address": 156,
+            "size": 4,
+            "noload": true,
+            "inputs": [
+                {
+                    "object": "memory_map.o",
+                    "section": ".bss",
+                    "address": 156,
+                    "size": 4
+                }
+            ]
+        }
+    ],
+    "object_sections": [
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 144,
+            "address": 0,
+            "output_section": ".text",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "main2.o",
+            "section": ".init",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 0,
+            "address": 0,
+            "output_section": ".init",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "memory_map.o",
+            "section": ".text",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 0,
+            "address": 144,
+            "output_section": ".text",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "memory_map.o",
+            "section": ".data",
+            "type": "PROGBITS",
+            "flags": "aw",
+            "alignment": 4,
+            "size": 12,
+            "address": 144,
+            "output_section": ".data",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "memory_map.o",
+            "section": ".bss",
+            "type": "NOBITS",
+            "flags": "aw",
+            "alignment": 4,
+            "size": 4,
+            "address": 156,
+            "output_section": ".bss",
+            "region": "BRAM",
+            "noload": true
+        }
+    ],
+    "symbols": {
+        "_start": {
+            "address": 0,
+            "section": ".text",
+            "offset": 0,
+            "visibility": "global",
+            "object": "main2.o"
+        },
+        "led_reg": {
+            "address": 144,
+            "section": ".data",
+            "offset": 0,
+            "visibility": "global",
+            "object": "memory_map.o"
+        },
+        "s1_reg": {
+            "address": 148,
+            "section": ".data",
+            "offset": 4,
+            "visibility": "global",
+            "object": "memory_map.o"
+        },
+        "s2_reg": {
+            "address": 152,
+            "section": ".data",
+            "offset": 8,
+            "visibility": "global",
+            "object": "memory_map.o"
+        },
+        "counter_bss": {
+            "address": 156,
+            "section": ".bss",
+            "offset": 0,
+            "visibility": "global",
+            "object": "memory_map.o"
+        }
+    },
+    "applied_relocations": [
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 0,
+            "patch_address": 0,
+            "type": "R_RISCV_HI20",
+            "symbol": "led_reg",
+            "target_address": 144,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 4,
+            "patch_address": 4,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "led_reg",
+            "target_address": 144,
+            "original": "0x0002A303",
+            "patched": "0x0902A303"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 8,
+            "patch_address": 8,
+            "type": "R_RISCV_HI20",
+            "symbol": "s1_reg",
+            "target_address": 148,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 12,
+            "patch_address": 12,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "s1_reg",
+            "target_address": 148,
+            "original": "0x0002A383",
+            "patched": "0x0942A383"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 16,
+            "patch_address": 16,
+            "type": "R_RISCV_HI20",
+            "symbol": "s2_reg",
+            "target_address": 152,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 20,
+            "patch_address": 20,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "s2_reg",
+            "target_address": 152,
+            "original": "0x0002A403",
+            "patched": "0x0982A403"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 24,
+            "patch_address": 24,
+            "type": "R_RISCV_HI20",
+            "symbol": "counter_bss",
+            "target_address": 156,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main2.o",
+            "section": ".text",
+            "offset": 28,
+            "patch_address": 28,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "counter_bss",
+            "target_address": 156,
+            "original": "0x00028493",
+            "patched": "0x09C28493"
+        }
+    ]
+}

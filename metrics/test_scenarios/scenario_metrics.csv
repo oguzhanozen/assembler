@@ -1,0 +1,5 @@
+scenario,source_files,source_bytes,program_bytes,picoimg_bytes,bram_linked_bytes,segments,uart_packets,uart_trials,uart_load_avg_ms,uart_load_min_ms,uart_load_max_ms,uart_load_stddev_ms,lut_used,lut_percent,register_used,register_percent,bsram_used,bsram_percent
+walking_one_led_pattern,2,674,48,96,48,1,4,10,22.364,22.085,22.698,0.152,2095,24.25,965,14.42,15,57.69
+up_down_counter,2,2304,156,204,160,1,5,10,35.805,35.593,36.085,0.122,2095,24.25,965,14.42,15,57.69
+multi_object_call_relocation,2,2074,116,164,116,1,4,10,28.251,28.103,28.417,0.086,2095,24.25,965,14.42,15,57.69
+memory_boundary_out_of_range,2,2376,148,196,148,1,5,10,35.035,34.843,35.266,0.113,2095,24.25,965,14.42,15,57.69

@@ -1,0 +1,301 @@
+{
+    "format": "picorv-linked-image",
+    "version": 2,
+    "script": "C:\\Users\\Oguzhan\\Desktop\\assembler\\tests\\project.ld",
+    "entry_symbol": "_start",
+    "entry": 0,
+    "memory_regions": [
+        {
+            "name": "BRAM",
+            "flags": "rwx",
+            "origin": 0,
+            "length": 16384,
+            "used": 148,
+            "memory_words": [
+                "0x000002B7",
+                "0x0842A303",
+                "0x000002B7",
+                "0x0882A383",
+                "0x000002B7",
+                "0x08C2A403",
+                "0x000002B7",
+                "0x0902A503",
+                "0x0003A583",
+                "0x0015F593",
+                "0x00059A63",
+                "0x00042603",
+                "0x00267613",
+                "0x02061063",
+                "0xFE9FF06F",
+                "0x000046B7",
+                "0xFFC68693",
+                "0x00A6A023",
+                "0x00100713",
+                "0x00E32023",
+                "0x0180006F",
+                "0x000016B7",
+                "0x00469693",
+                "0x00A6A023",
+                "0x03F00713",
+                "0x00E32023",
+                "0x0003A583",
+                "0x0015F593",
+                "0x00042603",
+                "0x00267613",
+                "0x00C5E733",
+                "0xFE0716E3",
+                "0xFA1FF06F",
+                "0x10000000",
+                "0x10000004",
+                "0x10000004",
+                "0x000000AA"
+            ]
+        }
+    ],
+    "output_sections": [
+        {
+            "name": ".init",
+            "region": "BRAM",
+            "address": 0,
+            "size": 0,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "main3.o",
+                    "section": ".init",
+                    "address": 0,
+                    "size": 0
+                }
+            ]
+        },
+        {
+            "name": ".text",
+            "region": "BRAM",
+            "address": 0,
+            "size": 132,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "main3.o",
+                    "section": ".text",
+                    "address": 0,
+                    "size": 132
+                },
+                {
+                    "object": "secure_data.o",
+                    "section": ".text",
+                    "address": 132,
+                    "size": 0
+                }
+            ]
+        },
+        {
+            "name": ".rodata",
+            "region": "BRAM",
+            "address": 132,
+            "size": 0,
+            "noload": false,
+            "inputs": []
+        },
+        {
+            "name": ".data",
+            "region": "BRAM",
+            "address": 132,
+            "size": 16,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "secure_data.o",
+                    "section": ".data",
+                    "address": 132,
+                    "size": 16
+                }
+            ]
+        },
+        {
+            "name": ".bss",
+            "region": "BRAM",
+            "address": 148,
+            "size": 0,
+            "noload": true,
+            "inputs": []
+        }
+    ],
+    "object_sections": [
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 132,
+            "address": 0,
+            "output_section": ".text",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "main3.o",
+            "section": ".init",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 0,
+            "address": 0,
+            "output_section": ".init",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "secure_data.o",
+            "section": ".text",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 0,
+            "address": 132,
+            "output_section": ".text",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "secure_data.o",
+            "section": ".data",
+            "type": "PROGBITS",
+            "flags": "aw",
+            "alignment": 4,
+            "size": 16,
+            "address": 132,
+            "output_section": ".data",
+            "region": "BRAM",
+            "noload": false
+        }
+    ],
+    "symbols": {
+        "_start": {
+            "address": 0,
+            "section": ".text",
+            "offset": 0,
+            "visibility": "global",
+            "object": "main3.o"
+        },
+        "led_ptr": {
+            "address": 132,
+            "section": ".data",
+            "offset": 0,
+            "visibility": "global",
+            "object": "secure_data.o"
+        },
+        "s1_ptr": {
+            "address": 136,
+            "section": ".data",
+            "offset": 4,
+            "visibility": "global",
+            "object": "secure_data.o"
+        },
+        "s2_ptr": {
+            "address": 140,
+            "section": ".data",
+            "offset": 8,
+            "visibility": "global",
+            "object": "secure_data.o"
+        },
+        "test_pattern": {
+            "address": 144,
+            "section": ".data",
+            "offset": 12,
+            "visibility": "global",
+            "object": "secure_data.o"
+        }
+    },
+    "applied_relocations": [
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 0,
+            "patch_address": 0,
+            "type": "R_RISCV_HI20",
+            "symbol": "led_ptr",
+            "target_address": 132,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 4,
+            "patch_address": 4,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "led_ptr",
+            "target_address": 132,
+            "original": "0x0002A303",
+            "patched": "0x0842A303"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 8,
+            "patch_address": 8,
+            "type": "R_RISCV_HI20",
+            "symbol": "s1_ptr",
+            "target_address": 136,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 12,
+            "patch_address": 12,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "s1_ptr",
+            "target_address": 136,
+            "original": "0x0002A383",
+            "patched": "0x0882A383"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 16,
+            "patch_address": 16,
+            "type": "R_RISCV_HI20",
+            "symbol": "s2_ptr",
+            "target_address": 140,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 20,
+            "patch_address": 20,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "s2_ptr",
+            "target_address": 140,
+            "original": "0x0002A403",
+            "patched": "0x08C2A403"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 24,
+            "patch_address": 24,
+            "type": "R_RISCV_HI20",
+            "symbol": "test_pattern",
+            "target_address": 144,
+            "original": "0x000002B7",
+            "patched": "0x000002B7"
+        },
+        {
+            "object": "main3.o",
+            "section": ".text",
+            "offset": 28,
+            "patch_address": 28,
+            "type": "R_RISCV_LO12_I",
+            "symbol": "test_pattern",
+            "target_address": 144,
+            "original": "0x0002A503",
+            "patched": "0x0902A503"
+        }
+    ]
+}

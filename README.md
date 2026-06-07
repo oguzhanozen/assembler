@@ -244,7 +244,7 @@ PicoRV32 çevre birimi bellek haritası:
 | `0x10000000` | Oku/yaz | Kart üzerindeki altı LED, düşük 6 bit |
 | `0x10000004` | Salt-okunur | Kart üzerindeki S1/S2 butonları, basılı durumda bit 0/1 değeri `1` |
 
-`tests/ileri_geri_sayac/main2.asm`, iki butonla LED sayacını artırıp azaltan örnek programdır.
+`tests/up_down_counter/main2.asm`, iki butonla LED sayacını artırıp azaltan up/down counter test programıdır.
 
 ## Uzak Veri Adresleme
 
@@ -323,9 +323,40 @@ sırasında IDE donmaz; ilerleme, ACK/NACK hataları ve sonuçlar işlem günlü
 
 ## Assembly Test Senaryoları
 
-`tests/` klasörü, kart üzerinde çalıştırılabilecek farklı Assembly senaryolarını içerir:
+`tests/` klasörü, kart üzerinde çalıştırılabilecek farklı Assembly doğrulama
+senaryolarını içerir. Klasör ve rapor adları, senaryoların doğruladığı davranışlara
+karşılık gelen literatür terimleri kullanılarak seçilmiştir:
 
-- `karasimsek`: LED'leri sırayla yakar.
-- `ileri_geri_sayac`: S1 ve S2 butonlarıyla LED sayacını artırır ve azaltır.
-- `secimli_mat`: Buton seçimine göre farklı matematik işlemleri çalıştırır.
-- `bram_sinir_zorlama`: BRAM sınırındaki ve sınır dışındaki bellek erişimlerini dener.
+- `walking_one_led_pattern`: Walking-one bit deseniyle LED çıkış veri yolunu gözlemler.
+- `up_down_counter`: S1 ve S2 butonlarıyla up/down counter davranışını doğrular.
+- `multi_object_call_relocation`: Çoklu object dosyaları arasındaki fonksiyon çağrısı, sembol çözümleme ve relocation işlemlerini doğrular.
+- `memory_boundary_out_of_range`: Son geçerli BRAM adresi ile BRAM dışındaki ilk adrese yazma davranışını gözlemler.
+
+Senaryo adlarının literatürdeki karşılıkları, kapsam sınırlamaları ve kullanılan
+kaynaklar [`tests/SCENARIO_NAMING_AND_REFERENCES.md`](tests/SCENARIO_NAMING_AND_REFERENCES.md)
+dosyasında açıklanır.
+
+### Metrik Toplama ve Raporlama
+
+`metrics/collect_metrics.py`, tüm senaryoları assemble/link eder; program boyutlarını
+hesaplar, Gowin PNR raporundan LUT/Register/BSRAM kullanımını okur ve UART loader
+üzerinden gerçek yükleme sürelerini ölçer.
+
+Kartta UART-loader bitstream'i etkin ve seri port erişilebilirken:
+
+```bash
+python metrics/collect_metrics.py --port COM7 --baud 115200 --trials 10
+```
+
+Çıktılar `metrics/test_scenarios/` altında tutulur:
+
+- `README.md`: Sonuç tabloları, ölçüm yöntemi ve grafik bağlantıları
+- `scenario_metrics.csv` / `scenario_metrics.json`: Senaryo bazlı özet metrikler
+- `raw_uart_trials.csv`: Her UART yükleme tekrarının ham süresi
+- `charts/`: UART süresi, kod boyutu ilişkisi ve FPGA kaynak kullanım grafikleri
+- `build/`: Ölçümde kullanılan object, linked JSON, BRAM HEX ve `.picoimg` dosyaları
+
+Güncel ölçüm raporu [`metrics/test_scenarios/README.md`](metrics/test_scenarios/README.md)
+dosyasındadır. Assembly programları çalışma zamanında UART üzerinden aynı BRAM'e
+yüklendiği için farklı senaryoların LUT/Register/BSRAM değerleri değişmez; bu
+değerler ortak PicoRV32 UART-loader FPGA tasarımına aittir.

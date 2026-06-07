@@ -1,0 +1,161 @@
+{
+    "format": "picorv-linked-image",
+    "version": 2,
+    "script": "C:\\Users\\Oguzhan\\Desktop\\assembler\\tests\\walking_one_led_pattern\\main_delay.ld",
+    "entry_symbol": "_start",
+    "entry": 0,
+    "memory_regions": [
+        {
+            "name": "BRAM",
+            "flags": "rwx",
+            "origin": 0,
+            "length": 16384,
+            "used": 48,
+            "memory_words": [
+                "0x100002B7",
+                "0x00100313",
+                "0x0062A023",
+                "0x010003B7",
+                "0x0040006F",
+                "0xFFF38393",
+                "0xFE039EE3",
+                "0x00131313",
+                "0x04000413",
+                "0xFE8312E3",
+                "0x00100313",
+                "0xFDDFF06F"
+            ]
+        }
+    ],
+    "output_sections": [
+        {
+            "name": ".text",
+            "region": "BRAM",
+            "address": 0,
+            "size": 48,
+            "noload": false,
+            "inputs": [
+                {
+                    "object": "main.o",
+                    "section": ".text",
+                    "address": 0,
+                    "size": 20
+                },
+                {
+                    "object": "delay.o",
+                    "section": ".text",
+                    "address": 20,
+                    "size": 28
+                }
+            ]
+        },
+        {
+            "name": ".rodata",
+            "region": "BRAM",
+            "address": 48,
+            "size": 0,
+            "noload": false,
+            "inputs": []
+        },
+        {
+            "name": ".data",
+            "region": "BRAM",
+            "address": 48,
+            "size": 0,
+            "noload": false,
+            "inputs": []
+        },
+        {
+            "name": ".bss",
+            "region": "BRAM",
+            "address": 48,
+            "size": 0,
+            "noload": true,
+            "inputs": []
+        }
+    ],
+    "object_sections": [
+        {
+            "object": "main.o",
+            "section": ".text",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 20,
+            "address": 0,
+            "output_section": ".text",
+            "region": "BRAM",
+            "noload": false
+        },
+        {
+            "object": "delay.o",
+            "section": ".text",
+            "type": "PROGBITS",
+            "flags": "ax",
+            "alignment": 4,
+            "size": 28,
+            "address": 20,
+            "output_section": ".text",
+            "region": "BRAM",
+            "noload": false
+        }
+    ],
+    "symbols": {
+        "_start": {
+            "address": 0,
+            "section": ".text",
+            "offset": 0,
+            "visibility": "global",
+            "object": "main.o"
+        },
+        "loop": {
+            "address": 8,
+            "section": ".text",
+            "offset": 8,
+            "visibility": "global",
+            "object": "main.o"
+        },
+        "delay_start": {
+            "address": 20,
+            "section": ".text",
+            "offset": 0,
+            "visibility": "global",
+            "object": "delay.o"
+        }
+    },
+    "applied_relocations": [
+        {
+            "object": "main.o",
+            "section": ".text",
+            "offset": 16,
+            "patch_address": 16,
+            "type": "R_RISCV_JAL",
+            "symbol": "delay_start",
+            "target_address": 20,
+            "original": "0x0000006F",
+            "patched": "0x0040006F"
+        },
+        {
+            "object": "delay.o",
+            "section": ".text",
+            "offset": 16,
+            "patch_address": 36,
+            "type": "R_RISCV_BRANCH",
+            "symbol": "loop",
+            "target_address": 8,
+            "original": "0x00831063",
+            "patched": "0xFE8312E3"
+        },
+        {
+            "object": "delay.o",
+            "section": ".text",
+            "offset": 24,
+            "patch_address": 44,
+            "type": "R_RISCV_JAL",
+            "symbol": "loop",
+            "target_address": 8,
+            "original": "0x0000006F",
+            "patched": "0xFDDFF06F"
+        }
+    ]
+}

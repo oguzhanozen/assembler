@@ -1,0 +1,69 @@
+{
+  "format": "picorv-json-object",
+  "version": 2,
+  "sections": [
+    {
+      "name": ".text",
+      "type": "PROGBITS",
+      "flags": "ax",
+      "alignment": 4,
+      "size": 28,
+      "data": [
+        "0x93",
+        "0x83",
+        "0xF3",
+        "0xFF",
+        "0xE3",
+        "0x9E",
+        "0x03",
+        "0xFE",
+        "0x13",
+        "0x13",
+        "0x13",
+        "0x00",
+        "0x13",
+        "0x04",
+        "0x00",
+        "0x04",
+        "0x63",
+        "0x10",
+        "0x83",
+        "0x00",
+        "0x13",
+        "0x03",
+        "0x10",
+        "0x00",
+        "0x6F",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    }
+  ],
+  "symbols": {
+    "delay_start": {
+      "section": ".text",
+      "offset": 0,
+      "visibility": "global"
+    },
+    "loop": {
+      "section": "UNDEF",
+      "offset": 0,
+      "visibility": "extern"
+    }
+  },
+  "relocations": [
+    {
+      "section": ".text",
+      "offset": 16,
+      "type": "R_RISCV_BRANCH",
+      "symbol": "loop"
+    },
+    {
+      "section": ".text",
+      "offset": 24,
+      "type": "R_RISCV_JAL",
+      "symbol": "loop"
+    }
+  ]
+}

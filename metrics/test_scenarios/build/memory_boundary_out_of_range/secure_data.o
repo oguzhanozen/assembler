@@ -1,0 +1,62 @@
+{
+  "format": "picorv-json-object",
+  "version": 2,
+  "sections": [
+    {
+      "name": ".text",
+      "type": "PROGBITS",
+      "flags": "ax",
+      "alignment": 4,
+      "size": 0,
+      "data": []
+    },
+    {
+      "name": ".data",
+      "type": "PROGBITS",
+      "flags": "aw",
+      "alignment": 4,
+      "size": 16,
+      "data": [
+        "0x00",
+        "0x00",
+        "0x00",
+        "0x10",
+        "0x04",
+        "0x00",
+        "0x00",
+        "0x10",
+        "0x04",
+        "0x00",
+        "0x00",
+        "0x10",
+        "0xAA",
+        "0x00",
+        "0x00",
+        "0x00"
+      ]
+    }
+  ],
+  "symbols": {
+    "led_ptr": {
+      "section": ".data",
+      "offset": 0,
+      "visibility": "global"
+    },
+    "s1_ptr": {
+      "section": ".data",
+      "offset": 4,
+      "visibility": "global"
+    },
+    "s2_ptr": {
+      "section": ".data",
+      "offset": 8,
+      "visibility": "global"
+    },
+    "test_pattern": {
+      "section": ".data",
+      "offset": 12,
+      "visibility": "global"
+    }
+  },
+  "relocations": []
+}
