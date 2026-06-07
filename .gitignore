@@ -11,3 +11,6 @@ outputs/linker/*
 outputs/loader/*
 outputs/fpga/*
 !outputs/README.md
+
+# Yerel XeLaTeX rapor kaynakları
+report/*.tex

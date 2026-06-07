@@ -8,9 +8,9 @@ led_reg:    .word 0x10000000
 s1_reg:     .word 0x10000004
 s2_reg:     .word 0x10000004
 
-.section .bss, "aw", @nobits          # Linker Script'in NOBITS ayrıştırma testi
+.section .bss, "aw", @nobits          # Linker-script NOBITS parsing test
 .align 4
 .global counter_bss
 counter_bss:
-    .space 4                         # RAM'de 4 byte yer ayırır ama hex dosyasında yer kaplamaz
+    .space 4                         # Allocates 4 bytes in RAM but not in the HEX image
 .end

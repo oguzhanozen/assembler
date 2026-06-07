@@ -8,5 +8,5 @@
 led_ptr:       .word 0x10000000
 s1_ptr:        .word 0x10000004
 s2_ptr:        .word 0x10000004
-test_pattern:  .word 0x000000AA      # Sınır testlerinde belleğe yazılacak veri maskesi
+test_pattern:  .word 0x000000AA      # Data mask used by boundary-write tests
 .end
