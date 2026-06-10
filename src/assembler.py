@@ -12,6 +12,7 @@ opcode_table = {
     "addi":{"format": "I", "opcode": "0010011", "funct3": "000"},
     "andi":{"format": "I", "opcode": "0010011", "funct3": "111"},
     "slli":{"format": "I_SHIFT", "opcode": "0010011", "funct3": "001", "funct7": "0000000"},
+    "srli":{"format": "I_SHIFT", "opcode": "0010011", "funct3": "101", "funct7": "0000000"},
     "lw":  {"format": "I", "opcode": "0000011", "funct3": "010"},
     "lh":  {"format": "I", "opcode": "0000011", "funct3": "001"},
     "lbu": {"format": "I", "opcode": "0000011", "funct3": "100"},
@@ -37,7 +38,7 @@ directives = {
 }
 
 operand_counts = {
-    "add": 3, "sub": 3, "addi": 3, "andi": 3, "slli": 3, "and": 3, "or": 3, "xor": 3, "sll": 3, "srl": 3, "sra": 3,
+    "add": 3, "sub": 3, "addi": 3, "andi": 3, "slli": 3, "srli": 3, "and": 3, "or": 3, "xor": 3, "sll": 3, "srl": 3, "sra": 3,
     "lw": 2, "lh": 2, "lbu": 2, "sw": 2, "sh": 2, "sb": 2, 
     "beq": 3, "bne": 3, "blt": 3, "bge": 3, "jal": 2, "jalr": -1,
     "lui": 2, "auipc": 2,

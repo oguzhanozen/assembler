@@ -2,6 +2,7 @@ import os
 
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+TESTS_DIR = os.path.join(PROJECT_ROOT, "tests")
 OUTPUTS_DIR = os.path.join(PROJECT_ROOT, "outputs")
 ASSEMBLER_OUTPUT_DIR = os.path.join(OUTPUTS_DIR, "assembler")
 LINKER_OUTPUT_DIR = os.path.join(OUTPUTS_DIR, "linker")

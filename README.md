@@ -2,11 +2,11 @@
 
 Bu proje eğitim amaçlı bir RISC-V RV32I assembler, JSON tabanlı object linker ve Tkinter IDE uygulamasıdır.
 
-Assembler kaynak dosyalarını adres bağımsız V2 object dosyalarına dönüştürür. Nihai bellek yerleşimi assembler tarafından değil, zorunlu GNU-benzeri linker script tarafından belirlenir. Linker, UART loader için tek adresli `.picoimg` dosyası, her `MEMORY` bölgesi için ayrı BRAM uyumlu HEX görüntüsü ve ayrıntılı `.linked.json` raporu üretir.
+Assembler kaynak dosyalarını adres bağımsız object dosyalarına dönüştürür. Nihai bellek yerleşimi assembler tarafından değil, zorunlu GNU-benzeri linker script tarafından belirlenir. Linker, UART loader için tek adresli `.picoimg` dosyası, her `MEMORY` bölgesi için ayrı BRAM uyumlu HEX görüntüsü ve ayrıntılı `.linked.json` raporu üretir.
 
 ## Temel Akış
 
-1. Her `.asm` dosyasını ayrı ayrı assemble ederek V2 `.o` dosyası üretin.
+1. Her `.asm` dosyasını ayrı ayrı assemble ederek `.o` dosyası üretin.
 2. FPGA bellek haritasını bir `.ld` linker script içinde tanımlayın.
 3. Object dosyalarını linker script ile linkleyin.
 4. UART loader ile çalışırken `.picoimg` dosyasını gönderin; doğrudan BRAM başlangıç içeriği gerektiğinde bölge bazlı HEX dosyalarını kullanın.
@@ -50,15 +50,15 @@ Veri ve yerleşim direktifleri:
 Desteklenen komutlar:
 
 - R: `add`, `sub`, `and`, `or`, `xor`, `sll`, `srl`, `sra`
-- I: `addi`, `slli`, `lw`, `lh`, `lbu`, `jalr`
+- I: `addi`, `slli`, `srli`, `lw`, `lh`, `lbu`, `jalr`
 - S: `sw`, `sh`, `sb`
 - B: `beq`, `bne`, `blt`, `bge`
 - J/U: `jal`, `lui`, `auipc`
 - Sistem: `ecall`, `ebreak`
 
-## V2 Object Formatı
+## Object Formatı
 
-Assembler yalnız V2 object üretir:
+Assembler yalnız object üretir:
 
 ```json
 {
@@ -309,14 +309,6 @@ Tkinter IDE
 Kartın gücü kesilmediği sürece Gowin Programmer işlemini tekrarlamadan farklı
 `.picoimg` programları Tkinter IDE üzerinden art arda yüklenebilir.
 
-### IDE ile FPGA'ya Yükleme
-
-1. Gowin Programmer ile `outputs/fpga/picorv_loader.fs` bitstream'ini karta yükleyin.
-2. Assembly kaynaklarını IDE içinde assemble edin.
-3. `Linker > Object Dosyalarını Linkle...` ile `.picoimg` üretin.
-4. `FPGA > UART Loader...` penceresini açın.
-5. COM portu ve `.picoimg` dosyasını seçin.
-6. Önce `Bağlantıyı Test Et`, ardından `FPGA'ya Yükle ve Çalıştır` düğmesine basın.
 
 Loader penceresi mevcut `HostLoader` API'sini arka plan thread'inde kullanır. Yükleme
 sırasında IDE donmaz; ilerleme, ACK/NACK hataları ve sonuçlar işlem günlüğünde gösterilir.

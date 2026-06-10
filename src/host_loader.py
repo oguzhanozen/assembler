@@ -27,6 +27,19 @@ class HostLoaderError(RuntimeError):
     pass
 
 
+TARGET_ENTRY_ADDRESS = 0x00000000
+
+
+def validate_target_image(image):
+    entry = image["entry"]
+    if entry != TARGET_ENTRY_ADDRESS:
+        raise HostLoaderError(
+            f"Mevcut FPGA hedefi yalnızca entry=0x{TARGET_ENTRY_ADDRESS:08X} destekliyor; "
+            f"image entry=0x{entry:08X}. Link aşamasında _start içeren ana object dosyasını "
+            "ilk sıraya yerleştirin."
+        )
+
+
 class HostLoader:
     def __init__(self, stream, retries=3, retry_delay=0.05, progress=None):
         if retries < 1:
@@ -41,6 +54,7 @@ class HostLoader:
         self._transact(TYPE_PING)
 
     def load_image(self, image):
+        validate_target_image(image)
         segments = image["segments"]
         total_bytes = sum(len(segment["data"]) for segment in segments)
         transfer_crc32 = 0
@@ -162,6 +176,7 @@ def main(argv=None):
         if not args.image:
             raise HostLoaderError(".picoimg dosyası belirtilmeli.")
         image = read_loader_image(args.image)
+        validate_target_image(image)
         total_bytes = sum(len(segment["data"]) for segment in image["segments"])
         if args.dry_run:
             packet_count = 3 + sum(

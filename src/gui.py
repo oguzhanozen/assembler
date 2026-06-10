@@ -9,7 +9,13 @@ from typing import Optional
 from src.assembler import PicoRVAssembler, opcode_table
 from src.linker import PicoRVLinker
 from src.loader_gui import LoaderWindow
-from src.project_paths import ASSEMBLER_OUTPUT_DIR, LINKER_OUTPUT_DIR, LOADER_OUTPUT_DIR, ensure_output_dirs
+from src.project_paths import (
+    ASSEMBLER_OUTPUT_DIR,
+    LINKER_OUTPUT_DIR,
+    LOADER_OUTPUT_DIR,
+    TESTS_DIR,
+    ensure_output_dirs,
+)
 
 
 @dataclass
@@ -497,6 +503,7 @@ class AssemblerApp:
     def load_asm_file(self):
         file_paths = filedialog.askopenfilenames(
             title="Bir veya Birden Fazla .asm Dosyası Seç",
+            initialdir=TESTS_DIR,
             filetypes=[("Assembly Files", "*.asm"), ("All Files", "*.*")],
         )
         if not file_paths:
@@ -655,6 +662,7 @@ class AssemblerApp:
 
         script_path = filedialog.askopenfilename(
             title="Linker Script Seç",
+            initialdir=TESTS_DIR,
             filetypes=[("Linker Scripts", "*.ld"), ("All Files", "*.*")],
         )
         if not script_path:

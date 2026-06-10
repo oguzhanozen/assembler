@@ -4,7 +4,13 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-from src.host_loader import HostLoader, HostLoaderError, list_serial_ports, open_serial
+from src.host_loader import (
+    HostLoader,
+    HostLoaderError,
+    list_serial_ports,
+    open_serial,
+    validate_target_image,
+)
 from src.loader_image import LoaderImageError, read_loader_image
 from src.loader_protocol import ProtocolError
 from src.project_paths import FPGA_OUTPUT_DIR, LOADER_OUTPUT_DIR
@@ -151,6 +157,7 @@ class LoaderWindow:
     def load_worker(self, port, image_path):
         try:
             image = read_loader_image(image_path)
+            validate_target_image(image)
             total = sum(len(segment["data"]) for segment in image["segments"])
             self.events.put(
                 (

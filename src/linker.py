@@ -39,6 +39,7 @@ class PicoRVLinker:
         objects = self.load_objects(object_paths)
         if self.errors:
             return None, self.errors
+        objects = self.prioritize_entry_object(objects, script.entry)
 
         self.regions = self.build_regions(script)
         output_sections = self.place_sections(objects, script)
@@ -158,6 +159,21 @@ class PicoRVLinker:
                 continue
             objects.append(normalized)
         return objects
+
+    def prioritize_entry_object(self, objects, entry_name):
+        entry_objects = [
+            obj
+            for obj in objects
+            if (
+                entry_name in obj["symbols"]
+                and obj["symbols"][entry_name].get("visibility") == "global"
+                and obj["symbols"][entry_name].get("section") != "UNDEF"
+            )
+        ]
+        if len(entry_objects) != 1:
+            return objects
+        entry_object = entry_objects[0]
+        return [entry_object, *(obj for obj in objects if obj is not entry_object)]
 
     def normalize_object(self, raw, path, index):
         if raw.get("version") == 2 and raw.get("format") == "picorv-json-object":
